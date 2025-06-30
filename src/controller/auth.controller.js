@@ -3,6 +3,7 @@ import { comparar } from '../common/bcrypt.js';
 import config from '../config/env.js';
 import { User } from '../models/user.js';
 import jwt from 'jsanwebtoken';
+import authrouter from '../routes/auth.routes.js';
 
 async function login(req, res) {
     try {
