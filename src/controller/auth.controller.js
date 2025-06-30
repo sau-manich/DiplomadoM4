@@ -1,9 +1,7 @@
-
 import { comparar } from '../common/bcrypt.js';
 import config from '../config/env.js';
 import { User } from '../models/user.js';
-import jwt from 'jsanwebtoken';
-import authrouter from '../routes/auth.routes.js';
+import jwt from 'jsonwebtoken'; // ✅ Corrección aquí
 
 async function login(req, res) {
     try {
@@ -14,10 +12,14 @@ async function login(req, res) {
         const isMatch = await comparar(password, user.password);
 
         if (!isMatch) return res.status(403).json({ message: 'Invalid password' });
-        const token = jwt.sign({ userId: user.id }, config.JWT_SECRET, { expiresIn: config.JWT_EXPIRATION });
+        const token = jwt.sign(
+            { userId: user.id },
+            config.JWT_SECRET,
+            { expiresIn: config.JWT_EXPIRATION }
+        );
         res.json({ token });
     } catch (error) {
-        logger.error(error);
+        console.error(error); 
         res.status(500).json({ message: 'Internal server error' });
     }
 }
