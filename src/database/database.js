@@ -1,13 +1,20 @@
 
 import { Sequelize } from "sequelize";
+import config from "../config/env.js";
 
 export const sequelize = new Sequelize(
-    diplomado_db,
-    postgres,
-    postgres,
+    config.DB_DATABASE,
+    config.DB_USER,
+    config.DB_PASSWORD,
     {
-        host: process.env.DB_HOST || 'localhost',
-        dialect: process.env.DB_DIALECT || 'postgres',
-        logging: false,
+        host: config.DB_HOST,
+        dialect: config.DB_DIALECT,
+        logging: console.log(),
+        dialectOptions: config.DB_USE_SSL === 'true' ? {
+            ssl: {
+                require: true,
+                rejectUnauthorized: false,
+            },
+        } : {},
     }
 );
