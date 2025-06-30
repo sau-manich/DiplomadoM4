@@ -85,17 +85,37 @@ async function updateUser(req, res, next) {
     }
 }
 
-async function getTasks(req, res, next) {
-    const { userId } = req.user;
+async function activateInactivate(req, res, next) {
+    const { id } = req.params;
     try {
-        const tasks = await Task.findAll({
-            attributes: ['id', 'name', 'done'],
-            order: [['name', 'ASC']],
+        const user = await User.findByPk(id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        user.status = user.status === Status.ACTIVE ? Status.INACTIVE : Status.ACTIVE;
+        await user.save();
+        res.json(user);
+    } catch (error) {
+        next(error);
+    }
+}
+
+async function getTasks(req, res, next) {
+    const { userId } = req.params;
+    try {
+        const user = await Task.findOne({
+            attributes: ['username'],
+            include: [
+                {
+                    model: Task,
+                    attributes: ['name', 'done']
+                }
+            ],
             where: {
                 userId,
             },
-        });
-        res.json(tasks);
+        })
+        res.json(user);
     } catch (error) {
         next(error);
     }
@@ -107,5 +127,6 @@ export default {
     getUser,
     deleteUser,
     updateUser,
+    activateInactivate,
     getTasks,
 };

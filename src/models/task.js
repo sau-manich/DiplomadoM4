@@ -13,8 +13,8 @@ export const Task = sequelize.define('tasks', {
         allowNull: false,
         validate: {
             notNull: {
+                msg: 'Name is required',
             },
-            msg: 'Name is required',
         },
     },
     done: {
